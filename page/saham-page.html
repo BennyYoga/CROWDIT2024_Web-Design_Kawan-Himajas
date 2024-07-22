@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edufin - Saham</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <!-- Js Include -->
+    <script
+      src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
+      type="text/javascript"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../css/main-style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h1 class="text-center">Simulasi Saham</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Reprehenderit error asperiores sapiente earum impedit, eos dolores
+            quaerat ipsam laboriosam nesciunt debitis, facere placeat excepturi
+            beatae fuga amet ratione repudiandae expedita reiciendis itaque
+            dicta! Maxime nesciunt aspernatur iure deserunt sunt rerum veniam?
+            Reiciendis eius aperiam impedit quas obcaecati voluptatum ad
+            repellat.
+          </p>
+          <button class="btn fw-bold bg-main-dark text-white">
+            coba saham
+          </button>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <p>Pilih Jenis Keuntungan Saham</p>
+            <button class="btn fw-bold bg-main-dark text-white">
+              Capital Gain
+            </button>
+            <button class="btn fw-bold bg-main-dark text-white">
+              Total Dividen
+            </button>
+          </div>
+        </div>
+
+        <p class="mt-5">Capital Gain</p>
+        <hr />
+
+        <table>
+          <tr>
+            <th rowspan="2">Nama Saham</th>
+            <th colspan="2">Harga</th>
+          </tr>
+          <tr>
+            <th>Perlembar</th>
+            <th>Perlot</th>
+          </tr>
+          <tr>
+            <td>PT. Astra International Tbk</td>
+            <td>Rp. 100</td>
+            <td>Rp. 10.000</td>
+          </tr>
+          <tr>
+            <td>BBRI</td>
+            <td>Rp. 1.000</td>
+            <td>Rp. 100.000</td>
+          </tr>
+          <tr>
+            <td>BBCA</td>
+            <td>Rp. 5.000</td>
+            <td>Rp. 500.000</td>
+          </tr>
+        </table>
+
+        <form action="" class="mt-5">
+          <select name="pilih-saham" id="pilih-saham">
+            <option value="" selected disabled>Pilih Saham</option>
+            <option value="1">PT. Astra International Tbk</option>
+            <option value="2">BBRI</option>
+            <option value="3">BBCA</option>
+          </select>
+
+          <br />
+
+          <label for="">Jumlah Saham yang dibeli dalam lot</label>
+          <input id="totalLot" type="number" required />
+
+          <br />
+          <label for="">Tanggal Jual Saham</label>
+          <input id="tanggaljual" type="date" required />
+          <br />
+          <button type="submit" id="submit-capital-gain">Beli Saham</button>
+        </form>
+
+        <div class="hasil-sumulasi"></div>
+      </div>
+    </div>
+
+    <style>
+      .image-simulasi img {
+        width: 200px;
+      }
+
+      .custom-form {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-top: 10px;
+      }
+
+      .custom-form:focus {
+        outline: none;
+        border: 1px solid #28a92b;
+      }
+
+      #mychart {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+
+    <script>
+      $(document).ready(function () {
+        $("#submit-capital-gain").on("click", function (e) {
+          e.preventDefault();
+          $(".hasil-sumulasi").empty();
+          $(".hasil-sumulasi").append(
+            `
+            <div class="row">
+              <div class="col-sm-6">
+                <canvas id="mychart"></canvas>
+              </div>
+              <div class="col-sm-6" id="keterangan">
+              </div>
+            </div>
+          `
+          );
+
+          // Make Chart
+          let chart = $("#mychart");
+          let config = CreateChart();
+          new Chart(chart, config);
+
+          // Calculate
+          let codesaham = $("#pilih-saham").val();
+          let saham = $("#pilih-saham option:selected").text();
+          let totalLot = $("#totalLot").val();
+          let tanggaljual = $("#tanggaljual").val();
+
+          let hargaLotSaham = 0;
+          if (codesaham == 1) {
+            hargaLotSaham = 100;
+          } else if (codesaham == 2) {
+            hargaLotSaham = 1000;
+          } else if (codesaham == 3) {
+            hargaLotSaham = 5000;
+          }
+
+          let keuntungan = 0;
+          let hargaAwal = hargaLotSaham * totalLot * 100;
+          let hargaAkhir = 105 * totalLot * 100;
+          let capitalGain = hargaAkhir - hargaAwal;
+          keuntungan = capitalGain - capitalGain * 0.02 + hargaAwal;
+
+          $("#keterangan").append(
+            `
+            berdasakran data yang diinputkan, anda membeli saham ${saham} sebanyak ${totalLot} lot menjualnya pada tanggal ${tanggaljual} dengan keuntungan sebesar ${keuntungan},-
+          `
+          );
+        });
+      });
+
+      function CreateChart() {
+        const labels = ["July", "Ags", "Sep", "Okt", "Nov"];
+        const data = {
+          labels: labels,
+          datasets: [
+            {
+              label: "My First Dataset",
+              data: [100, 93, 88, 94, 105],
+              fill: false,
+              borderColor: "rgb(75, 192, 192)",
+              tension: 0.1,
+            },
+          ],
+        };
+
+        const config = {
+          type: "line",
+          data: data,
+        };
+
+        return config;
+      }
+
+      function RandomzeValue(id, month) {
+        totalMonth = month.count();
+        let data = [];
+        for (let i = 0; i < totalMonth; i++) {
+          if (i == 0) {
+            if (id == 1) {
+              data.push(100);
+            } else if (id == 2) {
+              data.push(1000);
+            } else if (id == 3) {
+              data.push(5000);
+            }
+          } else {
+            data.push(Math.floor(Math.random() * 100));
+          }
+        }
+      }
+
+      function GetMonth(startDate, endDate) {
+        const monthNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        const getMonthRange = (start, end) => {
+          const startMonth = new Date(start).getMonth();
+          const endMonth = new Date(end).getMonth();
+          const months = [];
+
+          for (let i = startMonth; i <= endMonth; i++) {
+            months.push(monthNames[i]);
+          }
+
+          return months;
+        };
+
+        data = getMonthRange(startDate, endDate);
+        return data;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  </head>
+  <body>
+    <svg id="svg" viewBox="0 0 100 100">
+      <rect
+        class="svgBox"
+        fill="#28a92b"
+        x="0"
+        y="35"
+        width="30"
+        height="30"
+        rx="2"
+      />
+    </svg>
+
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      svg {
+        height: 90vh;
+        max-height: 300px;
+        border: solid 2px white;
+        overflow: visible;
+      }
+    </style>
+
+    <script>
+      gsap.to(".svgBox", {
+        duration: 2,
+        x: 100, // use transform shorthand (this is now using SVG units not px, the SVG viewBox is 100 units wide)
+        xPercent: -100,
+        // or target SVG attributes
+        attr: {
+          fill: "#8d3dae",
+          rx: 50,
+        },
+      });
+    </script>
+  </body>
+</html>
